@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, FlatList, Button, TextInput, TouchableWithoutFeedback, Keyboard, Alert, StatusBar, Modal, Icon, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Button, TextInput, TouchableWithoutFeedback, Keyboard, Alert, ActivityIndicator, StatusBar, Modal, Icon, TouchableHighlight } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { globalStyles } from '../styles/global';
 import { VictoryPie } from 'victory-native';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import Loading from '../src/loading'
+import Welcome from './welcome'
 
 import * as firebase from 'firebase';
 import 'firebase/firestore';
@@ -31,6 +32,7 @@ export default function Home({ navigation }) {
   const [pricex, setPrice] = useState('');
   const [categoty, setCategoty] = useState('---');
   const [modalOpen, setModalOpen] = useState(false);
+  const [animating, setAnimating] = useState(true);
 
   var totalPrice = parseFloat(0.0);
 
@@ -116,78 +118,124 @@ export default function Home({ navigation }) {
     getItems()
   }, [])
 
+  setTimeout(() => { setAnimating(false) }, 1000)
+
   return (
     // <TouchableWithoutFeedback onPress={() => {
     //   Keyboard.dismiss();
     // }}>
-      <View style={globalStyles.container}>
+    <View style={globalStyles.container}>
 
-        <StatusBar hidden />
+      <StatusBar hidden />
 
-        {<View style={styles.header}>
+      {animating == true ? <ActivityIndicator size="large" animating={animating} /> :
+        <View style={styles.header}>
           {totalPrice > 0 ? <Text style={styles.textG}>Total: {parseFloat(totalPrice.toFixed(2))} $</Text>
             : <Text style={styles.textR}>Total: {parseFloat(totalPrice.toFixed(2))} $</Text>}
-        </View>}
+        </View>
+      }
 
-        {/* <FlatList 
-          data={saldo}
-          renderItem={({item}) => (<ItemList item={item}/>)}
-        /> */}
+      <FlatList
+        data={saldo}
+        renderItem={({ item }) => (<ItemList item={item} />)}
+      />
 
-        <FlatList 
-          data={saldo}
-          renderItem={({item}) => (<ItemList item={item}/>)}
-        />
-          
+      <Modal visible={modalOpen} animationType='slide'>
+        <View style={styles.modalContent}>
+          <MaterialIcons
+            name='close'
+            size={24}
+            style={{ ...styles.modalToggle, ...styles.modalClose }}
+            onPress={() => setModalOpen(false)}
+          />
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30, flexWrap: 'wrap', }}>
+            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
+              <View style={styles.test}>
+                <AntDesign name="shoppingcart" size={35} color="#50995E" />
+                <Text style={{ fontSize: 35, color: '#50995E' }}>Shopping</Text>
+              </View>
+            </TouchableHighlight><View style={styles.space} />
 
-        <Modal visible={modalOpen} animationType='slide'>
-          <View style={styles.modalContent}>
-            <MaterialIcons
-              name='close'
-              size={24}
-              style={{ ...styles.modalToggle, ...styles.modalClose }}
-              onPress={() => setModalOpen(false)}
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-              <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-                <View style={styles.test}>
-                  <MaterialCommunityIcons name="fruit-cherries" size={35} color="green" />
-                  <Text style={{ fontSize: 35, color: 'green' }}>test</Text>
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-                <View style={styles.test}>
-                  <MaterialCommunityIcons name="fruit-cherries" size={35} color="blue" />
-                  <Text style={{ fontSize: 35, color: 'blue' }}>test</Text>
-                </View>
-              </TouchableHighlight>
-            </View>
-          </View>
-        </Modal>
+            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
+              <View style={styles.test}>
+                <Ionicons name="fast-food" size={35} color="#6CE684" />
+                <Text style={{ fontSize: 35, color: '#6CE684' }}>Fast food</Text>
+              </View>
+            </TouchableHighlight></View>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16, marginBottom: 16 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30, flexWrap: 'wrap', }}>
+            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
+              <View style={styles.test}>
+                <FontAwesome5 name="smile-beam" size={35} color="#317999" />
+                <Text style={{ fontSize: 35, color: '#317999' }}>Cosmetics</Text>
+              </View>
+            </TouchableHighlight><View style={styles.space} />
+
+            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
+              <View style={styles.test}>
+                <FontAwesome5 name="heartbeat" size={35} color="#55B9E6" />
+                <Text style={{ fontSize: 35, color: '#55B9E6' }}>Health </Text>
+              </View>
+            </TouchableHighlight></View>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30, flexWrap: 'wrap', }}>
+            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
+              <View style={styles.test}>
+                <AntDesign name="shoppingcart" size={35} color="#50995E" />
+                <Text style={{ fontSize: 35, color: '#50995E' }}>Shopping</Text>
+              </View>
+            </TouchableHighlight><View style={styles.space} />
+
+            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
+              <View style={styles.test}>
+                <Ionicons name="fast-food" size={35} color="#6CE684" />
+                <Text style={{ fontSize: 35, color: '#6CE684' }}>Fast food</Text>
+              </View>
+            </TouchableHighlight></View>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30, flexWrap: 'wrap', }}>
+            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
+              <View style={styles.test}>
+                <FontAwesome5 name="smile-beam" size={35} color="#317999" />
+                <Text style={{ fontSize: 35, color: '#317999' }}>Cosmetics</Text>
+              </View>
+            </TouchableHighlight><View style={styles.space} />
+
+            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
+              <View style={styles.test}>
+                <FontAwesome5 name="heartbeat" size={35} color="#55B9E6" />
+                <Text style={{ fontSize: 35, color: '#55B9E6' }}>Health </Text>
+              </View>
+            </TouchableHighlight></View>
+
+        </View>
+      </Modal>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16, marginBottom: 16 }}>
         <AntDesign name="switcher" size={24} color="#D6A65E" onPress={() => setModalOpen(true)} style={styles.modalToggle} />
-        <Text onPress={() => setModalOpen(true)} style={{fontSize: 20, color: "#D6A65E"} }>Choosed category: {categoty}</Text>
-        </View>
-
-        <TextInput style={styles.input} placeholder='add text...' onChangeText={changeHandler} />
-        <TextInput style={styles.input} keyboardType='numeric' placeholder='add price...' onChangeText={changePrice} />
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16, marginBottom: 16 }}>
-          <TouchableHighlight activeOpacity={0.6} underlayColor="#ffffff00" onPress={() => addToFirebase(text, pricex, categoty)}>
-            <View style={styles.test}>
-              <MaterialIcons name="attach-money" size={35} color="#28655E" />
-              <Text style={{ fontSize: 35, color: '#28655E' }}>revenue</Text>
-            </View>
-          </TouchableHighlight>
-          <View style={styles.space} />
-          <TouchableHighlight activeOpacity={0.6} underlayColor="#ffffff00" onPress={() => addToFirebaseMinus(text, pricex, categoty)}>
-            <View style={styles.test}>
-              <MaterialIcons name="money-off" size={35} color="#B63F37" />
-              <Text style={{ fontSize: 35, color: '#B63F37' }}>expense</Text>
-            </View>
-          </TouchableHighlight>
-        </View>
+        <Text onPress={() => setModalOpen(true)} style={{ fontSize: 20, color: "#D6A65E" }}>Choosed category: {categoty}</Text>
       </View>
+
+      <TextInput style={styles.input} placeholder='add text...' onChangeText={changeHandler} />
+      <TextInput style={styles.input} keyboardType='numeric' placeholder='add price...' onChangeText={changePrice} />
+
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16, marginBottom: 16 }}>
+        <TouchableHighlight activeOpacity={0.6} underlayColor="#ffffff00" onPress={() => addToFirebase(text, pricex, categoty)}>
+          <View style={styles.test}>
+            <MaterialIcons name="attach-money" size={35} color="#28655E" />
+            <Text style={{ fontSize: 35, color: '#28655E' }}>revenue</Text>
+          </View>
+        </TouchableHighlight>
+        <View style={styles.space} />
+
+        <TouchableHighlight activeOpacity={0.6} underlayColor="#ffffff00" onPress={() => addToFirebaseMinus(text, pricex, categoty)}>
+          <View style={styles.test}>
+            <MaterialIcons name="money-off" size={35} color="#B63F37" />
+            <Text style={{ fontSize: 35, color: '#B63F37' }}>expense</Text>
+          </View>
+        </TouchableHighlight>
+      </View>
+    </View>
     //</TouchableWithoutFeedback>
   );
 }

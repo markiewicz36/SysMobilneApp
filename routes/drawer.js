@@ -5,13 +5,12 @@ import HomeStack from './homeStack';
 import AboutStack from './aboutStack';
 
 const RootDrawerNavigation = createDrawerNavigator({
-    About: {
-        screen: AboutStack,
-    },
     Home: {
         screen: HomeStack,
     },
-
+    About: {
+        screen: AboutStack,
+    },
 })
 
 export default createAppContainer(RootDrawerNavigation);

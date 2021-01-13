@@ -3,12 +3,18 @@ import { createAppContainer } from 'react-navigation'
 
 import Home from '../screens/home'
 
-import About from '../screens/about'
+import Welcome from '../screens/welcome'
 
 import Header from '../src/header'
 import React from 'react'
 
 const screens = {
+    Welcome: {
+        screen: Welcome,
+        navigationOptions: {
+            headerShown: false,
+          }
+      },
     Home: {
         screen: Home,
         navigationOptions: ({ navigation }) => {
@@ -17,6 +23,7 @@ const screens = {
             }
         }
     },
+
 
 }
 
