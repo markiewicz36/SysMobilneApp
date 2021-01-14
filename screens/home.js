@@ -3,8 +3,8 @@ import { StyleSheet, View, Text, FlatList, Button, TextInput, TouchableWithoutFe
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { globalStyles } from '../styles/global';
 import { VictoryPie } from 'victory-native';
-import { MaterialIcons, AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import Loading from '../src/loading'
+import { MaterialIcons, AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome5, FontAwesome } from '@expo/vector-icons';
+import Category from '../src/category'
 import Welcome from './welcome'
 
 import * as firebase from 'firebase';
@@ -33,6 +33,8 @@ export default function Home({ navigation }) {
   const [categoty, setCategoty] = useState('---');
   const [modalOpen, setModalOpen] = useState(false);
   const [animating, setAnimating] = useState(true);
+  
+  const categories = ['Test', 'Test1', 'Test2']; 
 
   var totalPrice = parseFloat(0.0);
 
@@ -50,6 +52,7 @@ export default function Home({ navigation }) {
 
   const changeCategory = (val) => {
     setCategoty(val);
+    setModalOpen(false);
   }
 
   const getItems = () => {
@@ -65,6 +68,21 @@ export default function Home({ navigation }) {
           })
         });
       });
+
+      firebase.firestore()
+      .collection('category')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(documentSnapshot => {
+          categories(() => {
+            return [
+              { name: documentSnapshot.data().name},
+            ]
+          })
+        });
+      });
+
+      
   }
 
   const addToFirebase = (text, pricex, categotyx) => {
@@ -121,9 +139,6 @@ export default function Home({ navigation }) {
   setTimeout(() => { setAnimating(false) }, 1000)
 
   return (
-    // <TouchableWithoutFeedback onPress={() => {
-    //   Keyboard.dismiss();
-    // }}>
     <View style={globalStyles.container}>
 
       <StatusBar hidden />
@@ -132,8 +147,7 @@ export default function Home({ navigation }) {
         <View style={styles.header}>
           {totalPrice > 0 ? <Text style={styles.textG}>Total: {parseFloat(totalPrice.toFixed(2))} $</Text>
             : <Text style={styles.textR}>Total: {parseFloat(totalPrice.toFixed(2))} $</Text>}
-        </View>
-      }
+        </View>}
 
       <FlatList
         data={saldo}
@@ -148,65 +162,11 @@ export default function Home({ navigation }) {
             style={{ ...styles.modalToggle, ...styles.modalClose }}
             onPress={() => setModalOpen(false)}
           />
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30, flexWrap: 'wrap', }}>
-            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-              <View style={styles.test}>
-                <AntDesign name="shoppingcart" size={35} color="#50995E" />
-                <Text style={{ fontSize: 35, color: '#50995E' }}>Shopping</Text>
-              </View>
-            </TouchableHighlight><View style={styles.space} />
-
-            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-              <View style={styles.test}>
-                <Ionicons name="fast-food" size={35} color="#6CE684" />
-                <Text style={{ fontSize: 35, color: '#6CE684' }}>Fast food</Text>
-              </View>
-            </TouchableHighlight></View>
-
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30, flexWrap: 'wrap', }}>
-            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-              <View style={styles.test}>
-                <FontAwesome5 name="smile-beam" size={35} color="#317999" />
-                <Text style={{ fontSize: 35, color: '#317999' }}>Cosmetics</Text>
-              </View>
-            </TouchableHighlight><View style={styles.space} />
-
-            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-              <View style={styles.test}>
-                <FontAwesome5 name="heartbeat" size={35} color="#55B9E6" />
-                <Text style={{ fontSize: 35, color: '#55B9E6' }}>Health </Text>
-              </View>
-            </TouchableHighlight></View>
-
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30, flexWrap: 'wrap', }}>
-            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-              <View style={styles.test}>
-                <AntDesign name="shoppingcart" size={35} color="#50995E" />
-                <Text style={{ fontSize: 35, color: '#50995E' }}>Shopping</Text>
-              </View>
-            </TouchableHighlight><View style={styles.space} />
-
-            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-              <View style={styles.test}>
-                <Ionicons name="fast-food" size={35} color="#6CE684" />
-                <Text style={{ fontSize: 35, color: '#6CE684' }}>Fast food</Text>
-              </View>
-            </TouchableHighlight></View>
-
-          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30, flexWrap: 'wrap', }}>
-            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-              <View style={styles.test}>
-                <FontAwesome5 name="smile-beam" size={35} color="#317999" />
-                <Text style={{ fontSize: 35, color: '#317999' }}>Cosmetics</Text>
-              </View>
-            </TouchableHighlight><View style={styles.space} />
-
-            <TouchableHighlight onPress={() => { changeCategory('testowanie'), setModalOpen(false) }}>
-              <View style={styles.test}>
-                <FontAwesome5 name="heartbeat" size={35} color="#55B9E6" />
-                <Text style={{ fontSize: 35, color: '#55B9E6' }}>Health </Text>
-              </View>
-            </TouchableHighlight></View>
+        <Text style={{fontSize: 35, justifyContent: 'center', alignItems: 'center',color: "#D6A65E" }}>Choose category:</Text>
+        <FlatList
+                data={categories}
+                renderItem={({ item }) => (<Category item={item} changeCategory={changeCategory}/>)}
+              />
 
         </View>
       </Modal>
