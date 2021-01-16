@@ -34,7 +34,7 @@ export default function Home({ navigation }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [animating, setAnimating] = useState(true);
   
-  const categories = ['Test', 'Test1', 'Test2']; 
+  const categories = ['Salary', 'Debt', 'Shopping', 'FastFood', 'Health', 'Car', 'Home', 'Passion']; 
 
   var totalPrice = parseFloat(0.0);
 
@@ -69,20 +69,6 @@ export default function Home({ navigation }) {
         });
       });
 
-      firebase.firestore()
-      .collection('category')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(documentSnapshot => {
-          categories(() => {
-            return [
-              { name: documentSnapshot.data().name},
-            ]
-          })
-        });
-      });
-
-      
   }
 
   const addToFirebase = (text, pricex, categotyx) => {
