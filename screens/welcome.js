@@ -3,18 +3,15 @@ import { StyleSheet, View, Text, ImageBackground, Button, TextInput, TouchableWi
 import { globalStyles } from '../styles/global';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
-const image = { uri: "https://i.pinimg.com/originals/2b/f9/73/2bf973e03ef8069d1f3f7bcf511f4847.gif" };
 
 
 export default function Welcome({ navigation }) {
   return (
     <View style={styles.container}>
-        <ImageBackground source={image} style={styles.image}>
-            <Text style={styles.text}>Welcome to Wydatec!</Text>
+        <ImageBackground source={require('../assets/wydatec_bg.jpg')} style={styles.image}>
             <TouchableHighlight activeOpacity={0.6} underlayColor="#ffffff00"  onPress={() => navigation.navigate('Home')}>
                 <View style={styles.test}>
-                    <MaterialIcons name="not-started" size={35} color="white" />
-                    <Text style={{ fontSize: 35, color: 'white' }}>start!</Text>
+                    <Text style={{ fontSize: 45, color: 'black' }}>start!</Text>
                 </View>
             </TouchableHighlight> 
         </ImageBackground>

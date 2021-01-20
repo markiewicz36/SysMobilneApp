@@ -11,11 +11,11 @@ export default function Header({navigation, title}) {
     }
 
     return (
-        <ImageBackground source={require('../assets/wydatec-bg.png')} style={styles.header}>
+        <ImageBackground source={require('../assets/wydatec_header.jpg')} style={styles.header}>
             <StatusBar hidden />
             <View style={styles.headerTitle}>
                 <MaterialIcons name='menu' size={28} onPress={openMenu} style={styles.icon}/>
-                <Image source={require('../assets/wydatec-logo.png')} style={styles.headerImage} />
+                <Image source={require('../assets/wydatec_logo.png')} style={styles.headerImage} />
                 <Text style={styles.headerText}>{title}</Text>
             </View>
         </ImageBackground>

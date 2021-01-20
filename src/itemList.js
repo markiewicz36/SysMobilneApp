@@ -5,10 +5,10 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 export default function ItemList({ item }) {
     return (
 
-            <View style={styles.list}>
-                { item.price > 0 ? <Text style={styles.textG}>{item.name} - {item.price} $</Text> 
-                : <Text style={styles.textR}>{item.name} - {item.price} $</Text> }
-            </View>
+        <View style={styles.list}>
+            { item.price > 0 ? <Text style={styles.textG}>{item.name} : {item.price} $ <Text style={{color: '#C0C0C0'}}>{item.category}</Text></Text>
+                : <Text style={styles.textR}>{item.name} : {item.price} $ <Text style={{color: '#C0C0C0'}}>{item.category}</Text></Text>}
+        </View>
     )
 }
 
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     },
     textG: {
         marginLeft: 10,
-        color: 'green'
+        color: '#007db1'
     },
     textR: {
         marginLeft: 10,

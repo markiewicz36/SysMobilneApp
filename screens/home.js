@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, FlatList, Button, TextInput, TouchableWithoutFeedback, Keyboard, Alert, ActivityIndicator, StatusBar, Modal, Icon, TouchableHighlight } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { globalStyles } from '../styles/global';
-import { VictoryPie } from 'victory-native';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Ionicons, FontAwesome5, FontAwesome } from '@expo/vector-icons';
 import Category from '../src/category'
-import Welcome from './welcome'
 
 import * as firebase from 'firebase';
 import 'firebase/firestore';
-import { set } from 'react-native-reanimated';
 import ItemList from '../src/itemList';
+import Chart, { refreshItems } from './chart';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBiMVVhnRFxNly3f291z1QIgQnlngrMyvM",
@@ -33,8 +30,8 @@ export default function Home({ navigation }) {
   const [categoty, setCategoty] = useState('---');
   const [modalOpen, setModalOpen] = useState(false);
   const [animating, setAnimating] = useState(true);
-  
-  const categories = ['Salary', 'Debt', 'Shopping', 'FastFood', 'Health', 'Car', 'Home', 'Passion']; 
+
+  const categories = ['Salary', 'Debt', 'Shopping', 'FastFood', 'Health', 'Car', 'Home', 'Passion'];
 
   var totalPrice = parseFloat(0.0);
 
@@ -58,17 +55,17 @@ export default function Home({ navigation }) {
   const getItems = () => {
     firebase.firestore()
       .collection('items')
+      .orderBy('createdAt')
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
           setSaldo((prevSaldo) => {
             return [
-              { name: documentSnapshot.data().name, price: documentSnapshot.data().price, key: documentSnapshot.data().key }, ...prevSaldo
+              { name: documentSnapshot.data().name, price: documentSnapshot.data().price, key: documentSnapshot.data().key, category: documentSnapshot.data().category  }, ...prevSaldo
             ]
           })
         });
       });
-
   }
 
   const addToFirebase = (text, pricex, categotyx) => {
@@ -80,6 +77,7 @@ export default function Home({ navigation }) {
           price: pricex,
           key: x,
           category: categotyx,
+          createdAt: Date.now()
         })
       setSaldo((prevSaldo) => {
         return [
@@ -92,6 +90,7 @@ export default function Home({ navigation }) {
         { text: 'OK' }
       ])
     }
+    setCategoty('---');
   };
 
   const addToFirebaseMinus = (text, pricex, categotyx) => {
@@ -104,6 +103,7 @@ export default function Home({ navigation }) {
           price: number,
           key: x,
           category: categotyx,
+          createdAt: Date.now()
         })
       setSaldo((prevSaldo) => {
         return [
@@ -116,6 +116,7 @@ export default function Home({ navigation }) {
         { text: 'OK' }
       ])
     }
+    setCategoty('---');
   };
 
   useEffect(() => {
@@ -137,8 +138,7 @@ export default function Home({ navigation }) {
 
       <FlatList
         data={saldo}
-        renderItem={({ item }) => (<ItemList item={item} />)}
-      />
+        renderItem={({ item }) => (<ItemList item={item} />)} />
 
       <Modal visible={modalOpen} animationType='slide'>
         <View style={styles.modalContent}>
@@ -148,12 +148,10 @@ export default function Home({ navigation }) {
             style={{ ...styles.modalToggle, ...styles.modalClose }}
             onPress={() => setModalOpen(false)}
           />
-        <Text style={{fontSize: 35, justifyContent: 'center', alignItems: 'center',color: "#D6A65E" }}>Choose category:</Text>
-        <FlatList
-                data={categories}
-                renderItem={({ item }) => (<Category item={item} changeCategory={changeCategory}/>)}
-              />
-
+          <Text style={{ fontSize: 35, justifyContent: 'center', alignItems: 'center', color: "#D6A65E" }}>Choose category:</Text>
+          <FlatList
+            data={categories}
+            renderItem={({ item }) => (<Category item={item} changeCategory={changeCategory} />)} />
         </View>
       </Modal>
 
@@ -162,14 +160,14 @@ export default function Home({ navigation }) {
         <Text onPress={() => setModalOpen(true)} style={{ fontSize: 20, color: "#D6A65E" }}>Choosed category: {categoty}</Text>
       </View>
 
-      <TextInput style={styles.input} placeholder='add text...' onChangeText={changeHandler} />
-      <TextInput style={styles.input} keyboardType='numeric' placeholder='add price...' onChangeText={changePrice} />
+      <TextInput style={styles.input} placeholder='add text...' onChangeText={changeHandler} clearButtonMode="always" />
+      <TextInput style={styles.input} keyboardType='numeric' placeholder='add price...' onChangeText={changePrice} clearButtonMode="always" />
 
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16, marginBottom: 16 }}>
         <TouchableHighlight activeOpacity={0.6} underlayColor="#ffffff00" onPress={() => addToFirebase(text, pricex, categoty)}>
           <View style={styles.test}>
-            <MaterialIcons name="attach-money" size={35} color="#28655E" />
-            <Text style={{ fontSize: 35, color: '#28655E' }}>revenue</Text>
+            <MaterialIcons name="attach-money" size={35} color="#007db1" />
+            <Text style={{ fontSize: 35, color: '#007db1' }}>revenue</Text>
           </View>
         </TouchableHighlight>
         <View style={styles.space} />
@@ -182,7 +180,6 @@ export default function Home({ navigation }) {
         </TouchableHighlight>
       </View>
     </View>
-    //</TouchableWithoutFeedback>
   );
 }
 
@@ -200,7 +197,7 @@ const styles = StyleSheet.create({
   },
   textG: {
     textAlign: 'center',
-    color: '#28655E',
+    color: '#007db1',
     fontSize: 30,
     fontWeight: 'bold'
   },
